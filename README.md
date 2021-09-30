@@ -22,8 +22,8 @@ Week 1
 Week 2
 ======
 
--   Clone and push code to git with ssh [Go](week-1/README.md#git)
--   Understanding the concept of Rmarkdown [Go](week-1/README.md#r-markdown)
+-   Clone and push code to git with ssh [Go](week-2/README.md#git)
+-   Understanding the concept of Rmarkdown [Go](week-2/README.md#r-markdown)
 
 Contact
 =======
