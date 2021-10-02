@@ -1,0 +1,279 @@
+---
+title: "My fantastic R markdown"
+subtitle: "This is the cool subtitle of my document"
+author: "Viki Mészáros"
+date: "21/09/2021"
+output: 
+    html_document:
+        toc: true
+        code_download: true
+        theme: flatly
+---
+
+
+# Write with Markdown
+
+You can easily include text to a markdown file.
+With two spaces  
+you can start a new paragraph.
+
+When you include a backslash\
+you will have a new line.
+
+You can also play around with the text you include. You can create **bold** or *italic* parts or could even ~~strikethrough~~ some words. You may need to include some superscrips x^2^ or subsripts x~1~.
+
+---
+
+# Headers
+
+When creating documents you will most probably need to use some headings.
+
+## Really big ones
+### Smaller ones
+##### Or even pretty smalls
+
+---
+
+# Lists
+
+You can include cool ordered and unordered lists as well.
+
+**Thing I like the most**
+
+- Coding
+- R
+- The R Mentoring Class
+  - Misi
+  - Viki
+
+
+*My aims for the year*
+
+1. Become a pro in coding
+2. Attend all R Mentoring classes
+3. Enjoy my studies
+
+-------------------
+
+# Links
+
+When you would like to put a link in your document, you can put the whole thing in the document, or you can also link it to a word which looks much better.
+
+Here is a cool website to style my markdowns. <https://prettydoc.statr.me/>
+
+Here is a cool [website](https://prettydoc.statr.me/) to style my markdowns.
+
+
+---
+
+# Equations
+
+During your studies you will probably need to include some equations as well.
+
+You can do this within your text. $e^{i \pi} + 1 = 0$ And continue explaining.
+
+Or you may create a separate block.
+
+$$E = mc^{2}$$
+
+---
+
+# Chunk options
+
+After text elements the other most important thing you will put into your markdown is code.
+
+You can include this between 
+
+```{r chunk-name, include=F} 
+#here comes your code
+```
+
+
+There are several different options you can use within the {}.
+Without anything the code you write will be shown and the results as well.
+
+```{r load data 1}
+
+df = iris
+head(df, 3)
+
+```
+
+
+With `eval=FALSE` (or `eval=F`) the code won't be evaluated, but it will be printed out.
+
+```{r load data 2, eval=F}
+
+df = iris
+head(df, 3)
+
+```
+
+
+With `echo=F` you can only show the output of the chunk but hide the code you used to get it. This is mostly used for figures.
+
+```{r load data 4, echo=F}
+
+df = iris
+head(df, 3)
+
+```
+
+
+With `include=F` you can exclude the chunk. It will run in the background. This is useful for data import or package loadings.
+
+```{r load data 3, include=F}
+
+df = iris
+head(df, 3)
+
+```
+
+---
+
+# Figures
+
+For example here I am only showing the fig without the codes.
+
+```{r iris fig, echo=F}
+library(ggplot2)
+
+p <- ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method="lm")+
+  scale_color_viridis_c()+
+  scale_x_continuous(breaks=1:8)+
+  labs(title="This Is A Title",subtitle="This is a subtitle",x=" Petal Length", 
+       y="Petal Width", caption="This is a little caption.")+
+  facet_wrap(~Species)+
+  theme_bw()+
+  theme(
+    axis.title=element_text(color="cyan4",face="bold", size = 11),
+    plot.title=element_text(color="cyan4",face="bold", size = 18),
+    plot.subtitle=element_text(color="cyan4", face = "italic", size = 14),
+    panel.grid=element_blank(),
+    legend.position = "none"
+  )
+
+show(p)
+```
+
+Here is the code for generate the plot
+```{r, message=F}
+library(ggplot2)
+
+p <- ggplot(data=iris,mapping=aes(x=Petal.Length,y=Petal.Width))+
+  geom_point(aes(color=Sepal.Width))+
+  geom_smooth(method="lm")+
+  scale_color_viridis_c()+
+  scale_x_continuous(breaks=1:8)+
+  labs(title="This Is A Title",subtitle="This is a subtitle",x=" Petal Length", 
+       y="Petal Width", caption="This is a little caption.")+
+  facet_wrap(~Species)+
+  theme_bw()+
+  theme(
+    axis.title=element_text(color="cyan4",face="bold", size = 11),
+    plot.title=element_text(color="cyan4",face="bold", size = 18),
+    plot.subtitle=element_text(color="cyan4", face = "italic", size = 14),
+    panel.grid=element_blank(),
+    legend.position = "none"
+  )
+
+show(p)
+```
+
+
+There are two extra lines before the graph. It is also possible to hide them. For this you can use `warning=F` to hide warning messages (*for example*: Warning: package 'ggplot2' was built under R version 4.0.5)
+
+
+```{r, echo=F, warning=F}
+show(p)
+```
+
+With `message=F` you can also hide any additional messages. (*for example*: 'geom_smooth()' using formula 'y ~ x')
+
+```{r, echo=F, message=F}
+show(p)
+```
+
+---
+
+You can also play around with the alignment of the figure.
+
+```{r, echo=F, message=F, fig.align='center'}
+show(p)
+```
+
+Or can change the size by the lines `out.width=` command. After the equal sign you can use percentages like *"50%"* or pixel sizes like *"300px"*
+
+**Using the measure "50%"**
+
+```{r, echo=F, message=F, fig.align='right', out.width="50%"}
+show(p)
+```
+
+**Using the measure "500px"**
+
+```{r, echo=F, message=F, fig.align='center', out.width="500px"}
+show(p)
+```
+
+
+
+
+# Tables
+
+There are some extra option to show your data in a markdown. The package I used the most was [KableExtra](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html).
+
+This is what the basic table would look like.
+
+```{r}
+head(df, 3)
+```
+
+This is how it looks with kableExtra.
+
+```{r}
+library(kableExtra)
+
+head(df, 3) %>% 
+  kbl() 
+```
+
+You can add different styles.
+
+```{r}
+head(df, 3) %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+Or even some interactive features like hovering.
+
+```{r, }
+head(df, 3) %>% 
+  kbl() %>% 
+  kable_paper(c("striped", "hover"), full_width = F)
+```
+
+
+There are some additional packages you can use to format your tables nicely. 
+
+- **flextable**
+- **gt**
+- **kable**
+
+
+# Styles
+
+To add some extra flavor to your docs you can use different themes. For this the easiest is to use [Bootswatch](https://bootswatch.com/). To change the styles you just need to replace *"flatly"* in the header to one of the names you can see on the website.
+
+Another way is to use [Prettydoc](https://prettydoc.statr.me/). For this you can check their website and see how this works.
+
+
+
+
+
+
+
+
