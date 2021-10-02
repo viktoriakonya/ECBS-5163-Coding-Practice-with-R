@@ -1,0 +1,7 @@
+• Create SSH key to connect to Github: Tools -> Global options
+• Create repository with SSH key
+• Create project with version control - copy SSH key to URL
+• Git -> Select file -> Commit -> Write commit -> Ok -> Piush
+• Clone repo: copy SSH -> Create new project in R -> Version control
+• Fork- > Create local copy -> Push back -> Create a pull request
+	- Fork: will not update
