@@ -1,6 +1,7 @@
 -   [Schedule](#schedule)
 -   [Week 1](#week-1)
 -   [Week 2](#week-2)
+-   [Week 3](#week-3)
 -   [Contact](#contact)
 
 Schedule
@@ -24,6 +25,12 @@ Week 2
 
 -   Clone and push code to git with ssh [Go](week-2/README.md#git)
 -   Understanding the concept of Rmarkdown [Go](week-2/README.md#r-markdown)
+
+Week 3
+======
+
+-   Practise the usage of basic functions [Go](week-3/README.md)
+-   paste, seq, %in%, runif, sample
 
 Contact
 =======
