@@ -1,0 +1,160 @@
+
+---
+title: "week-3-tasks"
+author: "Viktoria Konya"
+date: "September 30, 2021"
+output:
+  pdf_document:
+    toc: yes
+  prettydoc::html_pretty:
+    highlight: github
+    theme: cayman
+    toc: yes
+subtitle: Created fully by myself
+---
+
+Produce your first pdf with rmd
+install the following than knit a sample rmd file into pdf
+
+```{r}
+# install.packages('tinytex')
+# tinytex::install_tinytex()
+```
+
+Exercise 1
+```{r echo = F}
+v1 <- letters[1:5]
+v1
+```
+Exercise  2
+```{r echo = F}
+v2 <- letters[seq(1, length(letters), 2)]
+v2
+```
+Exercise 3
+```{r echo = F}
+coll <- "Count "
+num <- seq(1:10)
+v3 <- paste(coll, num)
+```
+
+Exercise 4
+```{r echo = F}
+v4 <- paste0(v2, "#", collapse="")
+v4
+```
+Exercise 5
+```{r echo = F}
+v5 <- paste(v2, "$ ", collapse="")
+v5
+```
+Exercise 6
+```{r echo = F}
+pi
+```
+Exercise 7
+```{r echo = F}
+round(pi,2)
+```
+Exercise 8
+```{r echo = F}
+sqrt(pi)
+```
+
+Exercise 9
+```{r echo = F}
+pi^5
+```
+
+Exercise 10
+```{r echo = F}
+v6 <- seq(0,1,0.01)
+v6
+```
+
+Exercise 11
+```{r echo = F}
+v7 <- seq(1,2,0.083333)
+v7
+```
+
+Exercise 12
+```{r echo = F}
+# generate a random number between 0 and 1
+runif(1, min=0, max=1)
+
+# generate 10 random number between 0 and 1
+runif(10, min=0, max=1)
+
+# generate 10 random number between 0 and 100
+runif(10, min=0, max=100)
+
+# generate 20 integer random number between 0 and 10 (it should contain 0 and 10 as well and use runif)
+floor(runif(20, min = 0, max=10))
+
+# generate 20 integer random number between 0 and 10 (use sample)
+sample(c(seq(0,10), seq(0,10)), 20)
+```
+
+
+```{r}
+# Create a vector called animals
+animals <- c('dog', 'cat', 'mouse', 'uniconr', 'bear', 'snake', 'whale', 'bull' )
+
+# check if 'bear' is in the animals vector
+any(animals=='bear')
+'bear' %in% animals
+is.element('bear', animals)
+
+# check if 'cat' and 'snake' are in the animal vector
+any(animals== c('cat', 'snake'))
+
+
+# sum how many of the followings 'mouse', 'wolf', 'shark', 'bull' are in the animals vector
+sum(c('mouse','wolf', 'shark', 'bull') %in% animals)
+
+
+# how many of the animals start with the letter b
+sum(substr(animals, 1, 1 ) == 'b')
+
+```
+
+
+```{r echo = F}
+# Create a list which contains 3 different type of element: string, number and vector
+l <- list('hello', 10, letters)
+typeof(l)
+
+# print out the second element of the vector
+l[[2]]
+
+# print out the length of the vector inside the list
+length(l[[3]])
+
+# check if the number in the list is divisible by 5
+l[[2]]%%5 == 0
+
+
+```
+
+```{r}
+t=seq(0,6,0.1)
+y=sin(t)
+plot(t,y,type="l", xlab="x", ylab="sin(x)")
+```
+
+Data type/structures
+```{r}
+#numeric
+i <- 3
+str(i)
+typeof(i)
+
+# string
+s <- 'Hello CEU'
+str(s)
+typeof(s)
+
+
+```
+

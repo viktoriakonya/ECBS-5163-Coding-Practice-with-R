@@ -1,17 +1,16 @@
+
 ---
 title: "My first R markdown"
-subtitle: "Created fully by myself"
 author: "Viktoria Konya"
 date: "September 30, 2021"
 output:
-    prettydoc::html_pretty:
-      toc: true
-      #toc_depth: 1
-      # code_download: true # not applicable with prettydoc
-      theme: cayman
-      highlight: github
-
-
+  pdf_document:
+    toc: yes
+  prettydoc::html_pretty:
+    highlight: github
+    theme: cayman
+    toc: yes
+subtitle: Created fully by myself
 ---
 This is my first markdown.
 

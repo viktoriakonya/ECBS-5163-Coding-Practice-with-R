@@ -4,13 +4,10 @@ subtitle: "Created fully by myself"
 author: "Viktoria Konya"
 date: "September 30, 2021"
 output:
-    prettydoc::html_pretty:
+    rmarkdown::html_document:
       toc: true
-      #toc_depth: 1
-      # code_download: true # not applicable with prettydoc
-      theme: cayman
-      highlight: github
-
+      code_download: true
+      theme: flatly
 
 ---
 This is my first markdown.
