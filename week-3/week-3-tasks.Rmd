@@ -1,0 +1,137 @@
+---
+title: "week-3-tasks"
+author: "Viki-Misi"
+date: "October 07, 2021"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+Produce your first pdf with rmd<br>
+install the following than knit a sample rmd file into pdf
+
+```{r, eval=FALSE}
+install.packages('tinytex')
+tinytex::install_tinytex()
+```
+
+
+Reproduce the followings 
+
+```{r, echo=F}
+
+letters[1:5]
+letters[ seq(1,length(letters), by=2) ]
+
+paste('Count',1:10)
+paste0(letters[ seq(1,length(letters), by=2) ], collapse = "#")
+paste0(letters[ seq(1,length(letters), by=2) ], collapse = " $ ")
+
+
+```
+
+Print out the value of 
+
+* pi
+* round pi to two digits
+* squre root of pi
+* pi power of 5
+```{r, echo=FALSE}
+pi
+round(pi, 2)
+sqrt(pi)
+pi^5
+
+```
+
+Create these sequences:
+```{r, echo=F}
+seq(0, 1, by = 0.02)
+seq(1, 2, length.out=13 )
+```
+
+* generate a random number between 0 and 1
+* generate 10 random number between 0 and 1
+* generate 10 random number between 0 and 100
+* generate 20 integer random number between 0 and 10 (it should contain 0 and 10 as well and use `runif`)
+* generate 20 integer random number between 0 and 10 (use `sample`)
+
+
+
+```{r, echo=FALSE}
+runif(1)
+runif(10)
+runif(10)*100
+floor(runif(20)*11)
+sample(1:10, 20, replace = T)
+
+```
+
+
+Create a vector called animals
+```{r}
+animals <- c('dog', 'cat', 'mouse', 'uniconr', 'bear', 'snake', 'whale', 'bull' )
+
+```
+
+* check if 'bear' is in the animals vector
+* check if 'cat' and 'snake' are in the animal vector
+* sum how many of the followings 'mouse', 'wolf', 'shark', 'bull' are in the animals vector
+* how many of the animals start with the letter b
+
+
+```{r, echo=F}
+'bear' %in% animals
+c('cat', 'snake') %in% animals
+sum(c('mouse', 'wolf', 'shark', 'bull' ) %in% animals)
+sum(startsWith(animals, 'b'))
+```
+
+Create a list which contains 3 different type of element: string, number and vector
+```{r}
+l <- list('hello', 10, letters)
+
+```
+
+* print out the second element of the vector
+* print out the length of the vector inside the list
+* check if the number in the list is divisible by 5 
+```{r, echo=F}
+l[[3]][2]
+print(length(l[[3]]))
+l[[2]]%%5 == 0
+
+```
+
+
+
+Plot sinus curve from 0, to 2pi
+```{r, echo=F}
+x <- seq(0, pi*2, by = 0.1)
+
+plot(x, sin(x), type = 'l', col = 'red')
+
+```
+
+
+
+Data type/structures
+
+List as many data type structure as you can!
+
+For example:
+```{r}
+#numeric
+i <- 3
+str(i)
+typeof(i)
+
+# string
+s <- 'Hello CEU'
+str(s)
+typeof(s)
+
+# 
+```
+
