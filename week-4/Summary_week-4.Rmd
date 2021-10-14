@@ -1,0 +1,427 @@
+---
+title: "week-4-tasks"
+author: "Viki-Misi"
+date: "October 14, 2021"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+
+## How to start a report
+
+#### 1. Clean environment
+
+```{r, eval=F}
+rm(list = ls())
+```
+
+
+#### 2. Call *ALL* libraries you will be using
+
+Optionally you can include the package install commands as comment so another user can decomment them and run easily. (Make sure if you decide to do so include every package you used!)
+
+```{r, echo=F, message=F, warning=F}
+# install.packages("tidyverse")
+
+library(tidyverse)
+library(data.table)
+library(kableExtra)
+```
+
+
+#### 3. Import data 
+
+You can use `getwd()` and then `setwd()` to first find out where you are currently, what is your current working directory and then change it to the one you need.
+
+You can create data frames by yourself.
+
+```{r}
+df <- tibble(id=c(1,2,3,4,5,6),
+             age=c(25,30,33,NA,26,38),
+             grade=c("A","A+","B","B-","B+","A"))
+```
+
+```{r, echo=F}
+df %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+Or you can load files from your local computer. 
+
+**Full path**
+
+```{r, eval=F}
+df <- read.csv("/Users/MViki/Documents/Jobs/CEU_R_Mentoring/ceu-ba-mentoring-priv/week-4/hotels_vienna.csv")
+```
+
+**Full path in user friendly way**
+
+```{r, eval=F}
+path <- "/Users/MViki/Documents/Jobs/CEU_R_Mentoring/ceu-ba-mentoring-priv/week-4/"
+
+df <- read.csv(paste0(path, "hotels_vienna.csv"))
+```
+
+**Relative path**
+
+```{r, eval=F}
+getwd()
+# setwd() # if needed
+
+df <- read.csv("hotels_vienna.csv")
+```
+
+**Using Github**
+
+```{r, eval=F}
+df <- read.csv("https://raw.githubusercontent.com/CEU-Economics-and-Business/ECBS-5208-Coding-1-Business-Analytics/master/class_2/data/hotels/clean/hotels-vienna.csv")
+```
+
+
+`rm()` with this command you can delete anything from your environment
+
+
+#### 4. Initial look at data
+
+`glimpse()` shows you a glimpse on data
+
+```{r, echo=F}
+glimpse(df)
+```
+
+`head(df)` shows some of the first observations
+
+```{r, echo=F}
+head(df) %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+
+`summary(df)` is a built in summary for variables
+
+```{r, echo=F}
+summary(df)
+```
+
+
+## Indexing in data-frames
+
+#### Using hard core indexing
+
+`df[1]` get the 1^st^ column
+
+```{r, echo=F}
+df[1]
+```
+
+`df[,1]` get the values from 1^st^ column as list
+
+
+```{r, echo=F}
+df[,1]
+```
+
+`df[1,]` get 1^st^ row 
+
+```{r, echo=F}
+df[1,]
+```
+
+`df[1,1]` get the value in the 1^st^ row and 3^rd^ column
+
+```{r, echo=F}
+df[1,3]
+```
+
+If you can to get the value insted of a list you should use `[[]]`
+
+```{r,echo=F}
+df[[1,3]]
+```
+
+
+#### Using column names
+
+Easier way to search for the column you need.
+
+`df$age` get the **age** column (the 2^nd^)
+
+```{r, echo=F}
+df$age
+```
+
+`df$age[3]` get 3^rd^ value of **age** column
+
+```{r, echo=F}
+df$age[3]
+```
+
+
+## Filter values in column
+
+`df$age[filter criteria]` get the values from **age** column that fulfill the given criteria
+
+While filtering you can use one criteria or you can use logical operators to negate or use multiple ones. 
+
+`!` Not
+`&` And
+`|` Or
+
+**Possibilities for filter criteria:**
+
+* `is.na(age)` get observations where **age** is NA
+* `!is.na(age)` get observations where **age** is NOT NA
+* `df$age > 10` get observations who are older than 10 years old
+* `df$age > 10 & df$age <= 30` get observations who are older than 10 years old *AND* less or equal to 30
+* `df$grade == 'A' | df$grade == 'A+'` get observation who got and A *OR* A+
+* `df$age[df$grade %in% c("A", "A+")]` get observation who got and A *OR* A+. `%in%` is a good substitute for multiple *OR* 
+
+`which()` gives you the indices of a df which fulfill the criteria. 
+**For example**: df$age[ which( df$grade == 'A' | df$grade == 'A+' ) ]
+
+```{r}
+df %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+
+```{r}
+which( df$grade == 'A' | df$grade == 'A+' )
+```
+
+When used as a filter criteria it gives the indices of rows fulfilling the criteria.
+
+```{r}
+df$age[ which( df$grade == 'A' | df$grade == 'A+' ) ]
+```
+
+Works the same as:
+
+```{r}
+df$age[ df$grade == 'A' | df$grade == 'A+' ]
+```
+
+And also same as
+
+```{r}
+df$age[ df$grade %in% c('A', 'A+') ]
+```
+
+
+## Simple functions
+
+`sum()` gives the sum of values
+`mean()` gives the average of values
+`sd()` gives the standard deviation of values
+`min()` gives the min of values
+`max()` gives the max of values
+
+
+## Join data-frames
+
+#### Using joins
+
+* `full_join(df1, df2, by = c("col1", "col2")` you need to list all common columns!
+* `left_join(df1, df2, by = "col")` you only put the column based on which you join
+* `right_join()`
+* `inner_join()`
+* `anti_join()`
+
+#### Using binds
+
+* `rbind(df1, df2)` put rows from **df2** after rows of **df1**
+* `cbind()`
+
+
+
+#### Wide or long table formats
+
+* `spread(df, key = col1, value = col2)` 
+* `gather(df, )`
+
+
+
+## Export your data
+
+Sometimes you need to save data you created in R. For examples the cleaned version of the data.
+
+You can save your data in many different formant, the most used by Viki were:
+
+* *csv* commonly used, you can open with Excel
+* *rds* better with large files, as it compress your files to a much smaller one
+
+```{r, eval=F}
+write_csv(df, paste0(path, "data_clean.csv"))
+saveRDS(df, paste0(path, "data_clean.rds"))
+```
+
+
+
+## Manipulate data-frames
+
+#### Change a value
+
+Just assign the value to the cell you need.
+
+```{r}
+df$age[1] <- 40
+
+df %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+#### Create new row
+
+You can use several methods as usually :D.
+
+You can add it with `rbind()`.
+
+```{r}
+df2 <- rbind(df, data.frame(id = 7, age = 19, grade = "B"))
+
+df2 %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+Or you can use `add_row()` from the tidyverse package.
+
+```{r}
+df2 <- add_row(df2, id = 8, age = 31, grade = "C+" )
+
+df2 %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+
+#### Create new column
+
+The simplest way is to assign values to it. If you want to just add an empty new column you can assign **0** or **NA** as value.
+
+```{r}
+df2$born_in <- 2021 - df2$age
+
+df2 %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+Or you can also use the `mutate()` function.
+
+```{r}
+df2 <- mutate(df2, turn_50 = born_in + 50)
+
+df2 %>% 
+  kbl() %>% 
+  kable_classic(full_width = F)
+```
+
+
+#### Additional function
+
+`separate(df, col_name, "at which character", into = c( "new_col_name" ))` separate values in a column at a given character to new columns
+
+`gsub(subtitue_this, with_this, in_this_vector)` substitutes given characters by others in a chosen vector
+
+
+
+## Data cleaning
+
+#### Dplyr approach
+
+In dplyr package there are a bunch of different useful functions for data cleaning. But before we look into them it is important to understand the way these are  aligned.
+
+There are two ways you can use these functions.
+
+* You can simply put `mutate(df, new_col = 1)`
+* Or you can use the pipes method. In this you connect the functions by a ` %>%` symbol. This method is really powerful when you want to apply multiple functions to the same df and with this you can do that with one code chunk.
+
+## SELECT
+
+Extract columns as a table.
+
+```{r}
+df2 %>% 
+  select(born_in, age) 
+```
+
+You can also use it to deselect columns.
+
+```{r}
+df2 %>% 
+  select(-born_in, -age)
+```
+
+
+## RENAME
+
+Rename columns of a data frame.
+
+```{r}
+df2 %>% 
+  rename(was_born = born_in)
+```
+
+
+## MUTATE
+
+Compute new columns.
+
+```{r}
+df2 %>% 
+  mutate(dog_age = round(age/7, 2))
+```
+
+
+## FILTER
+
+Extract rows that meet logical crietia.
+
+```{r}
+df2 %>% 
+  filter(age > 20)
+```
+
+
+## ARRANGE
+
+Order rows by values of a column or columns.
+
+```{r}
+df2 %>% 
+  arrange(desc(age))
+```
+
+
+## GROUP_BY
+
+
+
+## SUMMARISE
+
+
+
+
+
+
+#### Data.table approach
+
+
+
+
+
+
+
+
+
+
+
+
+
