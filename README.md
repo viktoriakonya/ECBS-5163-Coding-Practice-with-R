@@ -2,6 +2,7 @@
 -   [Week 1](#week-1)
 -   [Week 2](#week-2)
 -   [Week 3](#week-3)
+-   [Week 4](#week-4)
 -   [Contact](#contact)
 
 Schedule
@@ -29,8 +30,15 @@ Week 2
 Week 3
 ======
 
--   Practise the usage of basic functions [Go](week-3/README.md)
+-   Practise the usage of basic functions [Go](week-3/week-3-tasks.Rmd)
 -   paste, seq, %in%, runif, sample
+
+Week 4
+======
+
+-   Practise the usage of dplyr functions [Go](week-4/week-4-tasks.html)
+-   Filter, mutate, select, merge, rename
+-   Writing datat into different formats(csv, xlsx, rds)
 
 Contact
 =======
