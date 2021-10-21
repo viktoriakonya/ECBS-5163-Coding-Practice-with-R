@@ -1,0 +1,119 @@
+---
+title: "week-4-tasks"
+author: "Viki-Misi"
+date: "October 07, 2021"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+
+Install the `nycflights13` package and check it contents.
+```{r, message=FALSE}
+
+
+# install.packages('nycflights13')
+library(nycflights13)
+library( tidyverse )
+
+```
+
+
+Read the `my_csvfile.csv` from `https://github.com/CEU-Economics-and-Business/ECBS-5208-Coding-1-Business-Analytics/tree/master/class_2/data/hotels/clean` repository.
+
+```{r, echo=FALSE}
+
+read.csv('https://raw.githubusercontent.com/CEU-Economics-and-Business/ECBS-5208-Coding-1-Business-Analytics/master/class_2/data/hotels/clean/my_csvfile.csv') %>% head()
+```
+
+
+Filter the `flights` data where departure delays was over 1000.
+```{r, echo=F}
+filter(flights, dep_delay>1000)
+
+```
+
+
+Filter the `flights` data where departure delays was over 500 and destination was `MIA`  and carrier either `EV, AA, US` .
+```{r, echo=F}
+filter(flights, dep_delay>500,
+       dest=='MIA' & 
+         carrier%in% c("EV" ,'AA',"US"))
+
+```
+
+
+Merge the result with the airlines datasets.
+
+```{r, echo=FALSE}
+df <- filter(flights, dep_delay>500,
+       dest=='MIA' , 
+         carrier%in% c("EV" ,'AA',"US"))
+
+merge(df, airlines, by.x = 'carrier', by.y = 'carrier')
+
+
+```
+
+Write out the result into
+
+* csv without rownames
+* excel
+* rds
+
+```{r, echo=FALSE}
+write.csv(df,  'df.csv', row.names = F )
+
+library( xlsx )
+write.xlsx( df , 'df.xlsx' , sheetName = "Sheet1")
+
+saveRDS(df, 'df.rds')
+
+
+```
+
+
+
+
+
+Create a new column in the flights dataset  of the first three column which will be a string like `2015-01-15`
+```{r, echo=FALSE}
+fl <- flights
+fl$my_date <- paste0(fl$year, '-',
+                     ifelse(fl$month<10, paste0('0', fl$month), fl$month ), '-',
+                     ifelse(fl$day<10, paste0('0', fl$day), fl$day )
+)
+
+fl %>% select(c('year', 'month', 'day', 'my_date')) %>% head()
+
+```
+Change it to date column
+```{r, echo=FALSE}
+fl$my_date <- as.Date(fl$my_date)
+
+fl %>% select(c('year', 'month', 'day', 'my_date')) %>% head()
+
+```
+
+Create a new column `delays` which will indicate the delays, sum of absulute values of two delays 
+
+```{r, echo=FALSE}
+fl$delays <- abs(fl$dep_delay)+ abs(fl$arr_delay)
+
+fl %>% select(c('year', 'month', 'day', 'dep_delay', 'arr_delay', 'delays')) %>% head()
+
+```
+
+
+What is the carrier name of the flights which had the most departure delay. 
+```{r, echo=FALSE}
+merge(flights[which.max(flights$dep_delay),], airlines, by.x = 'carrier', by.y = 'carrier') %>% select('name')
+
+
+
+```
+
+
+
+
