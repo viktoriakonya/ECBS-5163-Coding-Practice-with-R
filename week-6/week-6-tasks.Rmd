@@ -1,0 +1,121 @@
+---
+title: "week-6"
+author: "Viki-Misi"
+date: "October 28, 2021"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r warning=F, message=F, warning=FALSE}
+library(nycflights13)
+library(tidyverse)
+library(ggplot2)
+set.seed(24)
+
+```
+
+
+**Task:**<br>
+The best carriers based on arriving (on average the arr_delay is the least), colors= limegreen and cyan4
+```{r, echo=FALSE, message=F, warning=FALSE}
+# number of flights from origin
+flights %>%
+  group_by(carrier)%>%
+  summarise('mean_arr_delay'=mean(arr_delay, na.rm = T)) %>%
+  arrange(mean_arr_delay) %>% 
+  ggplot(aes(x = reorder(carrier, mean_arr_delay), y = mean_arr_delay)) + 
+    geom_col(color='limegreen', fill='cyan4')+
+    labs( y='Average delay', x = 'Carrier')+theme_linedraw()
+  
+
+
+```
+
+
+**Task:**<br>
+Average arrival delay by destinations **name** in August
+
+```{r, echo=FALSE, message=F, warning=FALSE}
+
+flights %>%
+  filter(month==8) %>% 
+  group_by(dest)%>%
+  summarise('mean_delay'=mean(arr_delay)) %>%
+  arrange(mean_delay) %>% 
+  head(10) %>%
+  merge(y = airports %>% select('faa', 'name'), by.x = 'dest', by.y = 'faa' ) %>% 
+  arrange(mean_delay) %>% 
+  ggplot(aes(x = reorder(name, mean_delay), y = mean_delay)) + geom_col()+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 25, vjust = 0.8, hjust=1))+
+  labs( y='Average delay', x = 'Destination', title='Average arrival delay', subtitle = 'by destination')
+
+
+
+```
+
+**Task:**<br>
+The most popular airiles **name** from `JFK`
+```{r, echo=FALSE}
+
+flights %>%
+  filter(origin=='JFK') %>% 
+  group_by(carrier) %>%
+  summarise('n_flights'=n()) %>%
+  arrange(-n_flights) %>% 
+  head(10) %>% 
+  merge(y = airlines) %>% 
+  ggplot(aes(x = reorder(name, n_flights), y = n_flights)) + geom_col()+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 25, vjust = 0.8, hjust=1))+
+  labs( y='Number of flights', x = 'Destination')+
+  coord_flip()
+
+
+
+
+```
+
+
+**Task:**<br>
+Write a while loop that prints out standard random normal numbers (use `rnorm()`) but stops (`breaks()`) if you get a number bigger than 1.
+
+```{r, echo=FALSE}
+while (TRUE ) {
+  t <- rnorm(1)
+  if (t>1) {
+    print(paste0(t, ' is bigger than 1 the loop stopped'))
+    break() 
+  }else{
+    print(t)
+  }
+}
+
+
+```
+
+
+**Task:**<br>
+Adapt the loop from last exercise using `next()` do not print negative numbers.
+
+```{r, echo=FALSE}
+while (TRUE ) {
+  t <- rnorm(1)
+  if (t<0) {
+    next()
+  }
+  if (t>1) {
+    print(paste0(t, ' is bigger than 1 the loop stopped'))
+    break() 
+  }else{
+    print(t)
+  }
+}
+
+
+```
+
+
+
