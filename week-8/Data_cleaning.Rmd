@@ -15,7 +15,7 @@ library(data.table)
 library(janitor)
 library(kableExtra)
 
-my_path <- "/Users/MViki/Documents/Jobs/CEU_R_Mentoring/ECBS-5163-Coding-Practice-with-R/week-8/Data/"
+my_path <- ""
 ```
 
 
@@ -24,23 +24,12 @@ my_path <- "/Users/MViki/Documents/Jobs/CEU_R_Mentoring/ECBS-5163-Coding-Practic
 
 You can get the data from [Github](https://github.com/misrori/ceu-ba-mentoring-priv/tree/2021-2022/week-7/Data).
 
-```{r, include=F}
-
-df1 <- read.csv('https://raw.githubusercontent.com/misrori/ECBS-5163-Coding-Practice-with-R/master/week-8/Data/IMDB_top200.csv')
-
-df2 <- read.csv('https://raw.githubusercontent.com/misrori/ECBS-5163-Coding-Practice-with-R/master/week-8/Data/IMDB_50.csv')
-
-```
 
 ## Merge the data sets
 
 We have our data in two tables, so lets merge them together.
 
-```{r, include=F}
 
-df <- rbind(df1, df2)
-
-```
 
 
 ## Drop unnecessary columns
@@ -52,11 +41,6 @@ Delete the followings:
 * Website
 * Response
 * imdbID
-
-```{r, include=F}
-df <- df %>% 
-  select(-c(Poster, tomatoMeter, tomatoImage, tomatoRating, tomatoReviews, tomatoFresh, tomatoRotten, tomatoConsensus, tomatoUserMeter, tomatoUserRating, tomatoUserReviews, tomatoURL, Website, Response, imdbID))
-```
 
 
 ## Deal with column names
@@ -73,15 +57,6 @@ Make sure all names are lower case and are separeted by _ in case needed.
   Check out **janitor** package.
 </details>
   
-```{r, include=F}
-df <- df %>% 
-  rename(IMDB_rank = X,
-         Length_min = Runtime)
-
-df <- df %>% 
-  clean_names()
-
-```
 
 
 ## Change data types
@@ -93,22 +68,9 @@ df <- df %>%
   For `dvd` you must delete the ° before transforming to data format.
 </details>
 
-```{r, include=F}
-df$released <- as.Date(df$released, format = "%d %b %Y")
-
-# For dvd we also have to delete the ° before changing the data type
-df$dvd <- gsub("°", "", df$dvd)
-df$dvd <- as.Date(df$dvd, format = "%B/%Y/%d")
-        
-```
 
 The `IMDB rank` should be NOT numeric.
 
-```{r, include=F}
-
-df$imdb_rank <- as.character(df$imdb_rank)
-
-```
 
 
 `metascore`, `imdb_votes` and `box office` should be numeric.
@@ -125,13 +87,7 @@ df$imdb_rank <- as.character(df$imdb_rank)
 
 
 
-```{r, include=F}
 
-df$metascore <- as.numeric(df$metascore)
-df$imdb_votes <- as.numeric(gsub( "[^0-9\\.]", "", df$imdb_votes))
-df$box_office <- as.numeric(gsub("[^0-9\\.]", "", gsub("N/A", NA, df$box_office)))
-
-```
 
 
 ## Start looking at columns
@@ -140,51 +96,24 @@ df$box_office <- as.numeric(gsub("[^0-9\\.]", "", gsub("N/A", NA, df$box_office)
 
 This should be kept but also separated to year, month and day.
 
-```{r, include=F}
-
-df$released_to_sep <- df$released
-
-df <- separate(df, released_to_sep, c("year_2", "month", "day"), sep = "-")
-df$year_2 <- NULL
-df$month <- as.numeric(df$month)
-df$day <- as.numeric(df$day)
-
-```
 
 
 #### `length_min`
 
 This should be numeric, without the *min* word.
 
-```{r, include=F}
-
-df$length_min <- as.numeric(gsub("min", "", df$length_min))
-
-```
 
 
 #### `genre`
 
 There are 1, 2 or 3 genre given for a film, to be able to deal with this we need them in different columns. Also pay attention to extra white spaces!
 
-```{r, include=F}
-
-df <- separate( df, genre, "," , into = c("genre_1", "genre_2", "genre_3") )
-
-df$genre_2 <- trimws(df$genre_2)
-df$genre_3 <- trimws(df$genre_3)
-
-```
 
 #### `director`
 
 Keep only the first one listed.
 
-```{r, include=F}
 
-df <- separate(df, director, "," , into = c("director") )
-
-```
 
 #### `writer`
 
@@ -197,44 +126,23 @@ Keep only the first one listed and do NOT keep anything in ()!
 
 
 
-```{r, include=F}
 
-df <- separate( df, writer, "," , into = c("writer") )
-
-# Keep only names and delete things within ()
-df$writer <- gsub("(", "#", df$writer, fixed = TRUE)
-df <- separate( df, writer, "#" , into = c("writer") )
-
-```
 
 #### `language`
 
 Keep only the first one listed.
 
-```{r, include=F}
-
-df <- separate( df, language, "," , into = c("language"))
-
-```
 
 #### `country`
 
 Keep only the first one listed.
 
-```{r, include=F}
 
-df <- separate( df, country , "," , into = c("country"))
-
-```
 
 #### `ratings_value`
 
 Should be numeric so /10  is not needed.
 
-```{r, include=F}
-df <- separate( df, ratings_value , "/" , into = c("ratings_value") )
-df$ratings_value <- as.numeric(df$ratings_value)
-```
 
 
 #### `Awards`
@@ -248,14 +156,7 @@ As a first step create 4 new columns:
 * oscars
 * oscar nominations
 
-```{r, include=F}
 
-df$wins <- 0
-df$nominations <- 0
-df$oscars <- 0
-df$oscar_nomination <- 0
-
-```
 
 
 Create 4 functions to extract the number from the text in the `awards` column. 
@@ -355,11 +256,6 @@ df %>%
 
 Last step is always to save the cleaned data in a format that is useful later.
 
-```{r, include=F}
-
-write.csv(df, paste0(my_path, 'IMDB_clean.csv'))
-
-```
 
 
 # Data.table
@@ -415,31 +311,15 @@ df[length_min > 160 & metascore < 90][,1:5] %>% kbl()
 
 Filter your data frame for only the films that were released after 2000 and their rating is above 8.5.
 
-```{r, echo=F}
-df[year > 2000 & ratings_value > 8.5][,1:5] %>% kbl()
-```
-
 
 #### Task 2 
 
 Lets look at the ones that are not from the USA, won any Oscars or had any Oscar nominations.
 
-```{r, echo=F}
-
-df[country != 'USA' & (oscars > 0 | oscar_nomination > 0)][,1:5]  %>% kbl()
-
-```
-
 
 #### Task 3
 
 Now filter for the ones that are adventure from the Warner Brothers and we have box office info for them.
-
-```{r, echo=F}
-
-df[(genre_1 == 'Adventure' | genre_2 == 'Adventure' | genre_3 == 'Adventure') & tolower(production) %like% 'warner.' & !is.na(box_office)][,1:5] %>% kbl()  
-
-```
 
 
 ## Select or calculate columns
@@ -500,21 +380,10 @@ df[length_min > 160, mean(ratings_value)]
 
 Calculate the mean length of the films that were produced between 1990 and 2000 and has won an award.
 
-```{r, echo=F}
-
-df[year >= 1990 & year <= 2000 & awards > 0, mean(length_min)]
-
-```
-
 #### Task 5
 
 Calculate the minimum, maximum and the mean box office revenue for films with more than 1000000 imbd votes and are rating R.
 
-```{r, echo=F}
-
-df[imdb_votes >= 1000000 & rated == 'R', mean(box_office, na.rm = T)]
-
-```
 
 #### Task 6
 
