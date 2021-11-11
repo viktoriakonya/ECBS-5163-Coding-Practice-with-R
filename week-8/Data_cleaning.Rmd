@@ -1,0 +1,421 @@
+---
+title: "Data cleaning for IMDB data set"
+subtitle: "Week - 8"
+author: "Viki-Misi"
+date: "November 11, 2021"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r, include=F}
+library(tidyverse)
+library(data.table)
+library(janitor)
+library(kableExtra)
+
+my_path <- ""
+```
+
+
+
+## Get the data
+
+You can get the data from [Github](https://github.com/misrori/ceu-ba-mentoring-priv/tree/2021-2022/week-7/Data).
+
+
+## Merge the data sets
+
+We have our data in two tables, so lets merge them together.
+
+
+
+
+## Drop unnecessary columns
+
+Delete the followings:
+
+* everything with *tomato*
+* Poster
+* Website
+* Response
+* imdbID
+
+
+## Deal with column names
+
+Rename some columns
+
+* *X* to **IMDB_rank**
+* *Runtime* to **Lengt_min**
+
+Make sure all names are lower case and are separeted by _ in case needed.
+
+<details>
+  <summary>Hint</summary>
+  Check out **janitor** package.
+</details>
+  
+
+
+## Change data types
+
+`relesed` and `dvd` should be dates
+
+<details>
+  <summary>Hint</summary>
+  For `dvd` you must delete the ° before transforming to data format.
+</details>
+
+
+The `IMDB rank` should be NOT numeric.
+
+
+
+`metascore`, `imdb_votes` and `box office` should be numeric.
+
+<details>
+  <summary>Hint 1</summary>
+  Keep only numbers in the column.
+</details>
+
+<details>
+  <summary>Hint 2</summary>
+  Substitute N/A values with the proper ones.
+</details>
+
+
+
+
+
+
+## Start looking at columns
+
+#### `released` 
+
+This should be kept but also separated to year, month and day.
+
+
+
+#### `length_min`
+
+This should be numeric, without the *min* word.
+
+
+
+#### `genre`
+
+There are 1, 2 or 3 genre given for a film, to be able to deal with this we need them in different columns. Also pay attention to extra white spaces!
+
+
+#### `director`
+
+Keep only the first one listed.
+
+
+
+#### `writer`
+
+Keep only the first one listed and do NOT keep anything in ()! 
+
+<details>
+  <summary>Hint</summary>
+  You need to gsub the first ( with # and keep only the part before that.
+</details>
+
+
+
+
+
+#### `language`
+
+Keep only the first one listed.
+
+
+#### `country`
+
+Keep only the first one listed.
+
+
+
+#### `ratings_value`
+
+Should be numeric so /10  is not needed.
+
+
+
+#### `Awards`
+
+This will be the difficult part.
+
+As a first step create 4 new columns:
+
+* wins
+* nominations
+* oscars
+* oscar nominations
+
+
+
+
+Create 4 functions to extract the number from the text in the `awards` column. 
+
+<details>
+  <summary>Hint 1</summary>
+  Use `grepl()` to determine if the word *wins/nominations.|nomination./Won&Oscar/Nominated&Oscar* are in the text.
+</details>
+
+<details>
+  <summary>Hint 2</summary>
+  Use `strsplit()` to create a list of the words.
+</details>
+
+<details>
+  <summary>Hint 3</summary>
+  Make sure you deal with *wins.* vs *wins* or *nominations.* vs *nomination.*.
+</details>
+
+<details>
+  <summary>Hint 4</summary>
+  Use `which()` to find on which place the searched word (*wins/nominations./Won/Nominated*) is, and return the value from the list before this. In case the searched word is not in the sentence return NA.
+</details>
+
+
+```{r, include=F}
+get_wins <- function(t) {
+ if (grepl("wins", t)) {
+   pieces <- strsplit(t," ", fixed = TRUE)[[1]]
+   pieces <- gsub("wins.","wins", pieces)
+   return(as.numeric(pieces[which(pieces == "wins")-1]))  
+ } else {
+   return(NA)
+ }
+}
+
+get_nominations <- function(t) {
+  if (grepl("nominations.", t) | grepl("nomination.", t) ) {
+    pieces <- strsplit(t," ", fixed = TRUE)[[1]]
+    pieces <- gsub("nomination.","nominations.", pieces, fixed = TRUE)
+    return(as.numeric(pieces[which(pieces == "nominations.")-1]))  
+  } else {
+    return(NA)
+  }
+}
+
+get_oscar <- function(t) {
+  if (grepl("Won", t) & grepl("Oscar", t) ){
+    pieces <- strsplit(t, " ", fixed = TRUE)[[1]]
+    return(as.numeric(pieces[which(pieces == "Won") + 1]))
+  } else{
+    return(NA)
+  }
+}
+
+get_oscar_nominations <- function(t) {
+  if (grepl("Nominated", t) & grepl("Oscar", t) ){
+    pieces <- strsplit(t, " ", fixed = TRUE)[[1]]
+    return(as.numeric(pieces[which(pieces == "Nominated") + 2]))
+  } else{
+    return(NA)
+  }
+}
+
+```
+
+
+Loop through the rows of the data frame and get the number of wins and nominations in the 4 predefined columns using the functions created.
+
+```{r, include=F}
+
+for (i in 1:nrow(df)) {
+  df$oscar_nomination[i] <- get_oscar_nominations(df$awards[i])
+  df$oscars[i] <- get_oscar(df$awards[i])
+  df$nominations[i] <- get_nominations(df$awards[i])
+  df$wins[i] <- get_wins(df$awards[i])
+}
+
+```
+
+
+### Nice jooob, you are done with cleaning
+
+You can now cheer a bit :D
+
+```{r, include=F}
+
+df %>% 
+  head(10) %>% 
+  kbl() %>% 
+  kable_classic(full_width=F)
+
+```
+
+
+## Save the cleaned file
+
+Last step is always to save the cleaned data in a format that is useful later.
+
+
+
+# Data.table
+
+We will look at data.table package.
+
+For this the first step is to transfer the data frame to a data.table format.
+
+```{r}
+df <- data.table(df)
+```
+
+Alternatively you can read your data with `fread()` instead of `read.csv()` or `read_csv()`
+
+## Filter rows
+
+You can filter rows by their number. This gives the first 5 rows of the df.
+
+```{r}
+dim(df[1:5])
+```
+
+You can add a , after the number to make sure you filter for rows. If you do so for a data frame that is not a data.table, this makes sure that you filter for rows, if you do not include, it will filter for columns.
+
+```{r}
+
+dim(df1[1:5])
+dim(df1[1:5,])
+
+```
+
+
+The power of data.table lies in the ease of filtering and arranging and calculating new values.
+
+First lets talk about filtering. Instead of including numbers you can filter by setting the values. For example this will filter the data frame to only the rows where the length of the film is more than 160 minutes. 
+
+```{r}
+
+df[length_min > 160][1:10,1:5] %>% kbl()
+
+```
+
+You can chain your filters by **&** or **|**.
+
+```{r}
+
+df[length_min > 160 & metascore < 90][,1:5] %>% kbl()
+
+```
+
+
+#### Task 1
+
+Filter your data frame for only the films that were released after 2000 and their rating is above 8.5.
+
+
+#### Task 2 
+
+Lets look at the ones that are not from the USA, won any Oscars or had any Oscar nominations.
+
+
+#### Task 3
+
+Now filter for the ones that are adventure from the Warner Brothers and we have box office info for them.
+
+
+## Select or calculate columns
+
+`df[filter, select or calculate,...]`
+
+As the second variable for in the [] you can select given columns from the data. You have to use `list()` or `.()`.
+
+```{r}
+
+df[1:10, list(title, length_min, ratings_value)] %>% 
+  kbl()
+
+```
+
+You can also rename the columns like:
+
+```{r}
+
+df[1:10, .('Film title' = title, 
+              'Length of the movie' = length_min, 
+              'IMDB Rating' = ratings_value)] %>% 
+  kbl()
+
+```
+
+With using the `order()` function you can also reorder the values based on the values in one column.
+
+```{r}
+
+df[1:10, list('Film title' = title, 
+              'Length of the movie' = length_min, 
+              'IMDB Rating' = ratings_value)][order(-`Length of the movie`)] %>% 
+  kbl()
+
+```
+
+
+The most cool thing here is that you can really easily calculate stuff here. It can be one value.
+
+The number of films that are longer than 160 minutes.
+
+```{r}
+
+df[length_min > 160, .N]
+
+```
+
+Or the mean rating for these.
+
+```{r}
+
+df[length_min > 160, mean(ratings_value)]
+
+```
+
+#### Task 4
+
+Calculate the mean length of the films that were produced between 1990 and 2000 and has won an award.
+
+#### Task 5
+
+Calculate the minimum, maximum and the mean box office revenue for films with more than 1000000 imbd votes and are rating R.
+
+
+#### Task 6
+
+
+## Group by
+
+`df[filter, select or calculate, group by]`
+
+The next functionality we are covering is group by. This is the third part in the []. You can group your data by a choosen criteria by just putting it into the `by = ` variable.
+
+```{r}
+
+df[, .(num_films = .N), by = production][order(-num_films)][1:10] %>% 
+  kbl()
+
+```
+
+
+#### Task 7
+
+
+
+#### Task 8
+
+
+
+#### Task 9
+
+
+
+
+
+
+
+
